@@ -1,8 +1,5 @@
 package com.guitar.db;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.guitar.db.model.Location;
 import com.guitar.db.repository.LocationRepository;
+
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations={"classpath:com/guitar/db/applicationTests-context.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,6 +58,34 @@ public class LocationPersistenceTests {
 	public void testFindWithLike() throws Exception {
 		List<Location> locs = locationJpaRepository.findByStateLike("New%");
 		assertEquals(4, locs.size());
+	}
+
+	@Test
+	public void testFindWithOr() throws Exception {
+		List<Location> locs = locationJpaRepository.findByStateOrCountry("New Jersey","New Jersey");
+		assertNotNull(locs);
+		assertEquals(1, locs.size());
+	}
+
+	@Test
+	public void testFindWithAnd() throws Exception {
+		List<Location> locs = locationJpaRepository.findByStateAndCountry("New Jersey","United States");
+		assertNotNull(locs);
+		assertEquals(1, locs.size());
+	}
+
+	@Test
+	public void testFindWithIsEquals() throws Exception {
+		List<Location> locs = locationJpaRepository.findByStateIsOrCountryEquals("New Jersey","New Jersey");
+		assertNotNull(locs);
+		assertEquals(1, locs.size());
+	}
+
+	@Test
+	public void testFindWithNot() throws Exception {
+		List<Location> locs = locationJpaRepository.findByStateNot("New Jersey");
+		assertNotNull(locs);
+		assertNotSame("New Jersey",locs.get(0).getState());
 	}
 
 	@Test
