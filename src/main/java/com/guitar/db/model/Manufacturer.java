@@ -30,6 +30,16 @@ public class Manufacturer {
 	private String name;
 	private Date foundedDate;
 	private BigDecimal averageYearlySales;
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	private Boolean active;
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="MANUFACTURER_ID")
