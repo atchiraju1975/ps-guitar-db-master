@@ -56,8 +56,24 @@ public class LocationPersistenceTests {
 
 	@Test
 	public void testFindWithLike() throws Exception {
-		List<Location> locs = locationJpaRepository.findByStateLike("New%");
-		assertEquals(4, locs.size());
+		List<Location> locs1 = locationJpaRepository.findByStateLike("New%");
+		assertEquals(4, locs1.size());
+
+		List<Location> locs3 = locationJpaRepository.findByStateStartingWith("New");
+		assertEquals(4, locs3.size());
+
+		List<Location> locs4 = locationJpaRepository.findByStateEndingWith("Jersey");
+		assertEquals(1, locs4.size());
+		assertEquals("New Jersey", locs4.get(0).getState());
+		assertEquals("United States", locs4.get(0).getCountry());
+
+		List<Location> locs5 = locationJpaRepository.findByStateContaining("Jerse");
+		assertEquals(1, locs5.size());
+		assertEquals("New Jersey", locs5.get(0).getState());
+		assertEquals("United States", locs5.get(0).getCountry());
+
+		List<Location> locs2 = locationJpaRepository.findByStateNotLike("New%");
+		assertEquals(46, locs2.size());
 	}
 
 	@Test
