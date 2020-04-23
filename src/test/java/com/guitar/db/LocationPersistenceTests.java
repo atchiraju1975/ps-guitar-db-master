@@ -1,6 +1,7 @@
 package com.guitar.db;
 
 import java.util.List;
+import java.lang.System;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -56,8 +57,14 @@ public class LocationPersistenceTests {
 
 	@Test
 	public void testFindWithLike() throws Exception {
-		List<Location> locs1 = locationJpaRepository.findByStateLike("New%");
+		List<Location> locs1 = locationJpaRepository.findByIgnoreCaseStateLike("new%");
 		assertEquals(4, locs1.size());
+
+		Location locs7 = locationJpaRepository.findFirstByIgnoreCaseStateLike("new%");
+		assertEquals("New Hampshire", locs7.getState());
+
+		Location locs8 = locationJpaRepository.findTopByIgnoreCaseStateLike("new%");
+		assertEquals("New Hampshire", locs8.getState());
 
 		List<Location> locs3 = locationJpaRepository.findByStateStartingWith("New");
 		assertEquals(4, locs3.size());
@@ -72,8 +79,21 @@ public class LocationPersistenceTests {
 		assertEquals("New Jersey", locs5.get(0).getState());
 		assertEquals("United States", locs5.get(0).getCountry());
 
-		List<Location> locs2 = locationJpaRepository.findByStateNotLike("New%");
+		List<Location> locs2 = locationJpaRepository.findByStateNotLikeOrderByStateAsc("New%");
 		assertEquals(46, locs2.size());
+		locs2.forEach((location)->{
+			System.out.println(location.getState());
+		});
+		List<Location> locs9 = locationJpaRepository.findDistinctByStateNotLikeOrderByStateAsc("New%");
+		assertEquals(46, locs9.size());
+		locs9.forEach((location)->{
+			System.out.println(location.getState());
+		});
+		List<Location> locs6 = locationJpaRepository.findByStateNotLikeOrderByStateDesc("New%");
+		assertEquals(46, locs6.size());
+		locs6.forEach((location)->{
+			System.out.println(location.getState());
+		});
 	}
 
 	@Test
